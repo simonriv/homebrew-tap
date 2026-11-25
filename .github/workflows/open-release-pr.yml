@@ -30,6 +30,7 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           version="${BRANCH#release/v}"
-          gh pr view "$BRANCH" > /dev/null 2>&1 && exit 0
+          # Only an open PR counts: a closed one for the same branch must not stop a new one.
+          [ "$(gh pr list --head "$BRANCH" --state open --json number --jq length)" = 0 ] || exit 0
           gh pr create --base main --head "$BRANCH" --title "smalti $version" \
             --body "Cask de Smalti $version, publicado por el pipeline de release de simonriv/smalti."
