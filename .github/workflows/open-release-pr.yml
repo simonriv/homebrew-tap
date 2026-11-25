@@ -1,0 +1,31 @@
+# Opens the pull request for a cask branch pushed by Smalti's release pipeline (deploy key), after a style check.
+name: open-release-pr
+
+on:
+  push:
+    branches: ["release/**"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cask style
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew style Casks/smalti.rb
+
+      - name: Pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          version="${BRANCH#release/v}"
+          gh pr view "$BRANCH" > /dev/null 2>&1 && exit 0
+          gh pr create --base main --head "$BRANCH" --title "smalti $version" \
+            --body "Cask de Smalti $version, publicado por el pipeline de release de simonriv/smalti."
