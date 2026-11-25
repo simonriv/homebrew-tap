@@ -11,14 +11,18 @@ permissions:
 
 jobs:
   open:
-    runs-on: ubuntu-latest
+    # Casks are macOS software; the repository is public, so the macOS runner costs nothing.
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
 
-      - name: Cask style
+      - name: Cask style and audit
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew style Casks/smalti.rb
+          # Homebrew 7 audits a third-party tap only once trusted.
+          brew tap simonriv/tap "$GITHUB_WORKSPACE"
+          brew trust simonriv/tap
+          brew audit --cask --strict simonriv/tap/smalti
 
       - name: Pull request
         env:
