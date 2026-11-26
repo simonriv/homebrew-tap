@@ -1,6 +1,6 @@
 cask "smalti" do
-  version "0.8.0"
-  sha256 "123eacb9fc3fc7388f93d5de1de94246e015e6560fe7a04f095ce424c3f127ab"
+  version "0.8.5"
+  sha256 "17bc8b743964fe513c9c9108685e90a39f1ede2c3e4fbaaa1df04e1e86d23ea2"
 
   url "https://github.com/simonriv/smalti/releases/download/v#{version}/Smalti.dmg"
   name "Smalti"
